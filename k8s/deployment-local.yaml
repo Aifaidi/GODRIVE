@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: godrive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: godrive
+  template:
+    metadata:
+      labels:
+        app: godrive
+    spec:
+      containers:
+      - name: godrive
+        image: godrive:local
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: OIDC_ISSUER
+          valueFrom:
+            configMapKeyRef:
+              name: godrive-oidc-config
+              key: OIDC_ISSUER
+        - name: OIDC_PUBLIC_ISSUER
+          valueFrom:
+            configMapKeyRef:
+              name: godrive-oidc-config
+              key: OIDC_PUBLIC_ISSUER
+        - name: OIDC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: godrive-oidc-secret
+              key: OIDC_CLIENT_ID
+        volumeMounts:
+        - name: frontend-config
+          mountPath: /app/frontend/dist/config.json
+          subPath: config.json
+      volumes:
+      - name: frontend-config
+        configMap:
+          name: godrive-frontend-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: godrive
+spec:
+  selector:
+    app: godrive
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    nodePort: 30002
+---
+# Inject the frontend config dynamically
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: godrive-frontend-config
+data:
+  config.json: |
+    {
+      "authority": "http://localhost:8080/realms/master",
+      "client_id": "godrive-webapp",
+      "redirect_uri": "http://localhost:8000",
+      "post_logout_redirect_uri": "http://localhost:8000",
+      "response_type": "code",
+      "scope": "openid profile email"
+    }

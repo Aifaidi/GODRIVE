@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: godrive-oidc-secret
+type: Opaque
+stringData:
+  # Matching the 'godrive-webapp' client we will create in Keycloak
+  OIDC_CLIENT_ID: "godrive-webapp" 
+  OIDC_CLIENT_SECRET: "secret" # We will configure the client to not require a secret (public) or use this one
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: godrive-oidc-config
+data:
+  # Internal URL for Backend to validate tokens (container-to-container)
+  OIDC_ISSUER: "http://keycloak:8080/realms/master"
+  
+  # External URL for Frontend to redirect user to (browser-to-keycloak)
+  # IMPORTANT: This must match what the browser sees (localhost if accessing from host)
+  PUBLIC_OIDC_AUTHORITY: "http://localhost:8080/realms/master"
+  
+  # External Issuer URL for Backend validation (matches 'iss' in token)
+  OIDC_PUBLIC_ISSUER: "http://localhost:8080/realms/master"

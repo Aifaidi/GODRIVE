@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: godrive-oidc-secret
+type: Opaque
+stringData:
+  # Replace these with your actual OIDC provider details
+  # Base64 encoding is automatic with stringData, but for real production use, consider sealing secrets
+  OIDC_CLIENT_ID: "godrive-webapp"
+  OIDC_CLIENT_SECRET: "your-client-secret-if-backend-needs-it" # Backend currently validates token only, doesn't exchange
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: godrive-oidc-config
+data:
+  # The URL of your OIDC provider (e.g., Zitadel, Keycloak, Auth0)
+  OIDC_ISSUER: "http://localhost:8080" 

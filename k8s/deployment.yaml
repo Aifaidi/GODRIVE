@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: godrive
+  labels:
+    app: godrive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: godrive
+  template:
+    metadata:
+      labels:
+        app: godrive
+    spec:
+      containers:
+      - name: godrive
+        # Image will be loaded into Kind
+        image: godrive:latest
+        imagePullPolicy: Never 
+        env:
+        - name: OIDC_ISSUER
+          valueFrom:
+            configMapKeyRef:
+              name: godrive-oidc-config
+              key: OIDC_ISSUER
+        - name: OIDC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: godrive-oidc-secret
+              key: OIDC_CLIENT_ID
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: storage
+          mountPath: /app/uploads
+      volumes:
+      - name: storage
+        emptyDir: {} 
+# Note: For persistence in real clusters, use a PVC. For Kind simple testing, emptyDir is fine (ephemeral).
