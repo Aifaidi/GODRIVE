@@ -26,7 +26,7 @@ func (s *LocalStorage) SaveFile(reader io.Reader, filename string) (string, int6
 	// Simple strategy: keep original filename, handle collisions or uuid in real world
 	// For MVP, we'll just save it directly to BaseDir
 	path := filepath.Join(s.BaseDir, filename)
-	
+
 	// Create the file
 	out, err := os.Create(path)
 	if err != nil {
