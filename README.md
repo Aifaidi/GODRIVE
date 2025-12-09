@@ -54,7 +54,7 @@ The application will be available at [http://localhost:8080](http://localhost:80
 For a full local application stack including Keycloak (OIDC):
 
 ### Setup Environment
-如果你 are on WSL2 and need to set up Docker and Kind:
+are on WSL2 and need to set up Docker and Kind:
 ```bash
 ./setup_docker_kind_wsl.sh
 ```
@@ -82,3 +82,4 @@ This will:
 - Data stored in `godrive.db` (SQLite) and `uploads/` directory.
 
 - Stateless needed
+
