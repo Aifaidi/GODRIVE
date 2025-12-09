@@ -80,3 +80,5 @@ This will:
 - Browse files and folders.
 - **Trash & Star**: Recycle bin and favorites functionality.
 - Data stored in `godrive.db` (SQLite) and `uploads/` directory.
+
+- Stateless needed
